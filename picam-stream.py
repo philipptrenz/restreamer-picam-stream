@@ -55,8 +55,11 @@ class Main:
         print('SIGTERM was sent, exiting')
 
         self.s.stop_stream()
+        print('s.stop_stream() finished')
         self.o.stop()
+        print('s.stop() finished')
 
+        print('bye')
 
 if __name__ == '__main__':
     Main().start()
