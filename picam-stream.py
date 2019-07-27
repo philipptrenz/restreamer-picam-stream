@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import json
+import signal
 
 from observer import Observer
 from streamer import Streamer
@@ -9,6 +10,9 @@ from streamer import Streamer
 class Main:
 
     def __init__(self):
+
+        signal.signal(signal.SIGINT, self.exit)
+        signal.signal(signal.SIGTERM, self.exit)
 
         self.is_restarted = False
         self.config = self.load_config()
@@ -47,6 +51,12 @@ class Main:
     def start(self):
         self.s.start_stream()
         self.o.start()
+
+    def exit(self):
+        print('SIGTERM or SIGINT was signaled, exiting')
+        self.s.stop_stream()
+        self.o.stop()
+        exit(0)
 
 
 if __name__ == '__main__':

@@ -22,8 +22,6 @@ sudo apt install `ffmpeg python3 python3-pip git`
 git clone https://github.com/philipptrenz/restreamer-picam-stream.git picam-stream
 cd picam-stream
 
-sudo chmod 755 picam-stream.py
-
 sudo cp picam-stream /etc/init.d/
 sudo chmod 755 /etc/init.d/picam-stream
 sudo update-rc.d picam-stream defaults
