@@ -70,9 +70,6 @@ class Streamer:
     def on_stream_stop(self):
         print('stream stopped (PID: {})'.format(self.stream_pid))
 
-        self.stream_thread.join()
-        print('streaming thread exited')
-
         self.is_streaming = False
 
         if self.is_forced_stream_stop:
