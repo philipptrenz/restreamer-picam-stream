@@ -54,8 +54,8 @@ class Main:
     def exit(self, signum, frame):
         print('SIGTERM was sent, exiting')
 
-        self.s.stop_stream()
         self.o.stop()
+        self.s.stop_stream()
 
         print('bye!')
 
