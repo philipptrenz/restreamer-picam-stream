@@ -74,8 +74,6 @@ class Streamer:
 
         self.is_streaming = False
 
-        self.stream_thread.join()
-
         if self.is_forced_stream_stop:
             self.is_forced_stream_stop = False
             pass
