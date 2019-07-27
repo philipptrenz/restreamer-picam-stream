@@ -13,17 +13,9 @@ class Streamer:
         self.is_forced_stream_stop = False
         self.stream_pid = -1
 
-
-
         self.stream_command = self.get_stream_command(host, stream_token, stream_config)
 
     def get_stream_command(self, host, stream_token, stream_config):
-
-        cmd = 'raspivid -o - -t 0 -w {0} -h {1} -fps {2} -stm -b 800000 -g 10 | ' \
-              'ffmpeg -re -ar 44100 -ac 2 -acodec pcm_s16le -f s16le -ac 1 -i /dev/zero -f h264 -i - ' \
-              '-vcodec copy -acodec aac -ab 64k -g 10 -strict experimental -crf 23 -f ' \
-              'flv rtmp://{3}/live/external.stream?token={4}'
-
 
         cmd = 'raspivid -o - -t 0 -w {2} -h {3} -md {5} -fps {4} -stm -b 1000000 -g {6} | ' \
               'ffmpeg -loglevel warning -re -ar 44100 -ac 2 -acodec pcm_s16le -f s16le -ac 1 -i /dev/zero -f h264 -i - ' \
@@ -89,10 +81,11 @@ class Streamer:
         print('forcing stream stop ...')
         self.is_forced_stream_stop = True
         self.stream_thread_proc.kill()
-        self.is_streaming = False
 
     def restart_stream(self):
-        self.stop_stream()
+
+        if self.is_streaming:
+            self.stop_stream()
 
         # wait for stop
         while self.is_streaming:

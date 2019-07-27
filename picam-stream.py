@@ -49,7 +49,6 @@ class Main:
             self.is_restarted = False
 
     def start(self):
-        self.s.start_stream()
         self.o.start()
 
     def exit(self):
