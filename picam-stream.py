@@ -50,7 +50,6 @@ class Main:
 
     def start(self):
         self.o.start()
-        self.s.start_stream()
 
     def exit(self, signum, frame):
         print('SIGTERM was sent, exiting')
