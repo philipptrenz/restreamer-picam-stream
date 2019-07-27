@@ -14,9 +14,9 @@ class Streamer:
 
 
 
-        self.stream_command = self.get_stream_command(host, stream_config)
+        self.stream_command = self.get_stream_command(host, stream_token, stream_config)
 
-    def get_stream_command(self, host, stream_config):
+    def get_stream_command(self, host, stream_token, stream_config):
 
         cmd = 'raspivid -o - -t 0 -w {0} -h {1} -fps {2} -stm -b 800000 -g 10 | ' \
               'ffmpeg -re -ar 44100 -ac 2 -acodec pcm_s16le -f s16le -ac 1 -i /dev/zero -f h264 -i - ' \
@@ -24,17 +24,20 @@ class Streamer:
               'flv rtmp://{3}/live/external.stream?token={4}'
 
 
-        cmd = 'raspivid -o - -t 0 -w {0} -h {1} -md {3} -fps {2} -stm -b 1000000 -g {6} | ' \
+        cmd = 'raspivid -o - -t 0 -w {2} -h {3} -md {5} -fps {4} -stm -b 1000000 -g {6} | ' \
               'ffmpeg -loglevel warning -re -ar 44100 -ac 2 -acodec pcm_s16le -f s16le -ac 1 -i /dev/zero -f h264 -i - ' \
               '-vcodec copy -acodec aac -ab 64k -g {6} -strict experimental -crf {7} -f ' \
-              'flv rtmp://{4}/live/external.stream?token={5}'
+              'flv rtmp://{0}/live/external.stream?token={1}'
+
+        host = self.strip_host_name(host)
+
         return cmd.format(
+            host,
+            stream_token,
             stream_config['width'],
             stream_config['height'],
             stream_config['fps'],
             stream_config['raspivid_mode'],
-            self.strip_host_name(host),
-            stream_config['stream_token'],
             stream_config['group_of_pictures'],
             stream_config['h264_constant_rate_factor']
         )
