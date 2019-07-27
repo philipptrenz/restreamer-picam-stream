@@ -31,7 +31,7 @@ class Main:
             return config
 
     def restart_streamer(self, status):
-        if self.previous_status is not status:
+        if self.previous_status != status:
             print('observer reported status \'{}\''.format(status))
             self.previous_status = status
         if status in ['stopped', 'error']:
