@@ -42,7 +42,7 @@ class Main:
 
         if status in ['stopped', 'error']:
             if not self.is_restarted:
-                print('restarting stream ...'.format(status))
+                print('(re)starting stream ...'.format(status))
                 self.s.restart_stream()
                 self.is_restarted = True
         else:

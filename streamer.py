@@ -91,4 +91,6 @@ class Streamer:
         while self.is_streaming:
             time.sleep(0.5)
 
+        time.sleep(5) # Give picam time to close
+
         self.start_stream()
