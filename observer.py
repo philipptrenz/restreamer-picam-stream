@@ -26,7 +26,7 @@ class Observer:
 
             try:
                 with urlopen('http://' + self.host + '/v1/states') as res:
-                    response = json.load(res)
+                    response = json.load(res.decode('utf-8'))
 
                     status = response['repeat_to_local_nginx']['type']
                     self.handle_status(status)
