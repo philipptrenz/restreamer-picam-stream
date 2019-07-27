@@ -1,3 +1,4 @@
+import time
 import threading
 import subprocess
 
@@ -92,4 +93,9 @@ class Streamer:
 
     def restart_stream(self):
         self.stop_stream()
+
+        # wait for stop
+        while self.is_streaming:
+            time.sleep(0.5)
+
         self.start_stream()

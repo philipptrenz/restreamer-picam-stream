@@ -54,8 +54,10 @@ class Main:
 
     def exit(self):
         print('SIGTERM or SIGINT was signaled, exiting')
+
         self.s.stop_stream()
         self.o.stop()
+
         exit(0)
 
 
