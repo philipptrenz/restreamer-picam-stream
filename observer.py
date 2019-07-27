@@ -40,7 +40,11 @@ class Observer:
                     self.handle_status('url_error')
                     print('URLError:', e)
 
-            time.sleep(self.polling_interval) # wait until next request
+            start_time = time.time()
+            while (time.time()-start_time) < self.polling_interval:
+                if self.is_stopped:
+                    return
+                time.sleep(0.5)
 
         return
 
@@ -51,7 +55,8 @@ class Observer:
     [ 'connected', 'connecting', 'stopped', 'error', 'server_not_reachable', 'http_error', 'url_error' ]
     '''
     def handle_status(self, status):
-        self.event_callback(status)
+        if not self.is_stopped:
+            self.event_callback(status)
 
     def start(self):
         if not self.is_running:
