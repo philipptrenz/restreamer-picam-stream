@@ -68,9 +68,13 @@ class Streamer:
         print('stream started (PID: {})'.format(self.stream_pid))
 
     def on_stream_stop(self):
-        time.sleep(5) # give picam time to quit
-        self.is_streaming = False
         print('stream stopped (PID: {})'.format(self.stream_pid))
+
+        self.stream_thread.join()
+        print('streaming thread exited')
+
+        self.is_streaming = False
+
         if self.is_forced_stream_stop:
             self.is_forced_stream_stop = False
             pass
