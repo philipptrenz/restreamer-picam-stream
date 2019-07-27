@@ -10,12 +10,13 @@ class Streamer:
         self.stream_process = None
         self.stream_thread = None
         self.is_forced_stream_stop = False
-
         self.stream_pid = -1
 
-        self.stream_command = self.get_stream_command(stream_config)
 
-    def get_stream_command(self, stream_config):
+
+        self.stream_command = self.get_stream_command(host, stream_config)
+
+    def get_stream_command(self, host, stream_config):
 
         cmd = 'raspivid -o - -t 0 -w {0} -h {1} -fps {2} -stm -b 800000 -g 10 | ' \
               'ffmpeg -re -ar 44100 -ac 2 -acodec pcm_s16le -f s16le -ac 1 -i /dev/zero -f h264 -i - ' \
@@ -32,7 +33,7 @@ class Streamer:
             stream_config['height'],
             stream_config['fps'],
             stream_config['raspivid_mode'],
-            self.strip_host_name(stream_config['host']),
+            self.strip_host_name(host),
             stream_config['stream_token'],
             stream_config['group_of_pictures'],
             stream_config['h264_constant_rate_factor']
