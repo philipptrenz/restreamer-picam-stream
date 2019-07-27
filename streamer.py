@@ -55,7 +55,7 @@ class Streamer:
         self.on_stream_stop when the subprocess completes.
         """
         def run():
-            self.stream_thread_proc = subprocess.Popen(self.stream_command, shell=True)
+            self.stream_thread_proc = subprocess.Popen(self.stream_command, stdout=subprocess.PIPE, shell=True)
             self.stream_pid = self.stream_thread_proc.pid
             self.on_stream_start()
 

@@ -23,17 +23,19 @@ class Main:
         print('streaming to \'{}\''.format(host))
 
         self.s = Streamer(host, stream_token, stream_config)
-        self.o = Observer(host, self.restart_streamer)
+        self.o = Observer(host, self.observer_event_handler)
 
     def load_config(self, config_path='./config.json'):
         with open(config_path, 'r') as f:
             config = json.load(f)
             return config
 
-    def restart_streamer(self, status):
-        if self.previous_status != status:
+    def observer_event_handler(self, status):
+
+        if self.previous_status != status: # status has changed
             print('observer reported status \'{}\''.format(status))
             self.previous_status = status
+
         if status in ['stopped', 'error']:
             if not self.is_restarted:
                 print('restarting stream ...'.format(status))
