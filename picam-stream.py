@@ -40,7 +40,7 @@ class Main:
             print('observer reported status \'{}\''.format(status))
             self.previous_status = status
 
-        if status in ['stopped', 'error']:
+        if status in ['disconnected', 'stopped', 'error']:
             if not self.is_restarted:
                 print('(re)starting stream ...'.format(status))
                 self.s.restart_stream()

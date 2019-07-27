@@ -21,8 +21,6 @@ class Observer:
     def run(self):
         print('observer started')
         while True:
-            print('polling ...')
-
             try:
                 with urlopen('http://' + self.host + '/v1/states') as res:
                     response = json.loads(res.read().decode())
