@@ -56,7 +56,7 @@ class Observer:
         if self.is_running:
             self.event_callback(status)
         else:
-            print('Not sending event_callback with status \'{}\', because observer should be stopped'.format(status))
+            print('Not sending \'{}\' event, as observer is stopping'.format(status))
 
     def start(self):
         if not self.is_running:
