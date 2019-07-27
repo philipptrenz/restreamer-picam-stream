@@ -75,7 +75,7 @@ class Streamer:
             pass
         else:
             # auto restart stream if it was not forced to stop
-            self.start_stream()
+            self.restart_stream()
 
     def stop_stream(self):
         print('forcing stream stop ...')
@@ -90,7 +90,5 @@ class Streamer:
         # wait for stop
         while self.is_streaming:
             time.sleep(0.5)
-
-        time.sleep(5) # Give picam time to close
 
         self.start_stream()
