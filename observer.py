@@ -70,4 +70,3 @@ class Observer:
         print('stopping observer ...')
         self.is_stopped = True
         self.thread.join()
-        print('observer stopped')

@@ -89,7 +89,7 @@ class Streamer:
 
             while self.is_streaming:
                 time.sleep(0.5)
-            print('streamer stopped')
+            return
 
     def restart_stream(self):
 
