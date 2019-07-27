@@ -48,7 +48,7 @@ class Observer:
     This function gets called for each request, status contains a string identifier, 
     which gets passed to the event_callback method. The id is one of the following:
     
-    [ 'connected', 'connecting', 'stopped', 'error', 'server_not_reachable', 'http_error', 'url_error' ]
+    [ 'connected', 'connecting', 'disconnected', 'stopped', 'error', 'server_not_reachable', 'http_error', 'url_error' ]
     '''
     def handle_status(self, status):
         if self.is_running:
