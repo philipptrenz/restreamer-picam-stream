@@ -14,15 +14,13 @@ class Observer:
 
         self.thread = None
         self.is_running = False
-        self.is_stopped = False
 
         self.event_callback = event_callback
-
         self.polling_interval = 5  # seconds
 
     def run(self):
         print('observer started')
-        while not self.is_stopped:
+        while True:
 
             try:
                 with urlopen('http://' + self.host + '/v1/states') as res:
@@ -40,13 +38,12 @@ class Observer:
                     self.handle_status('url_error')
                     print('URLError:', e)
 
+            # check if loop should be exited
             start_time = time.time()
             while (time.time()-start_time) < self.polling_interval:
-                if self.is_stopped:
+                if not self.is_running:
                     return
                 time.sleep(0.5)
-
-        return
 
     '''
     This function gets called for each request, status contains a string identifier, 
@@ -55,7 +52,7 @@ class Observer:
     [ 'connected', 'connecting', 'stopped', 'error', 'server_not_reachable', 'http_error', 'url_error' ]
     '''
     def handle_status(self, status):
-        if not self.is_stopped:
+        if self.is_running:
             self.event_callback(status)
         else:
             print('Not sending event_callback with status \'{}\', because observer should be stopped'.format(status))
@@ -63,12 +60,13 @@ class Observer:
     def start(self):
         if not self.is_running:
             self.is_running = True
-            self.is_stopped = False
 
             self.thread = threading.Thread(target=self.run)
             self.thread.start()
+        else:
+            print('observer already running')
 
     def stop(self):
         print('stopping observer ...')
-        self.is_stopped = True
+        self.is_running = False
         self.thread.join()
