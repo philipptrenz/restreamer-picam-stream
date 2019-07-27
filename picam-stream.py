@@ -17,6 +17,8 @@ class Main:
         stream_token = self.config['stream_token']
         stream_config = self.config['stream_config']
 
+        self.previous_status = ""
+
         print('### PICAM-STREAM ###')
         print('streaming to \'{}\''.format(host))
 
@@ -29,9 +31,12 @@ class Main:
             return config
 
     def restart_streamer(self, status):
+        if self.previous_status is not status:
+            print('observer reported status \'{}\''.format(status))
+            self.previous_status = status
         if status in ['stopped', 'error']:
             if not self.is_restarted:
-                print('observer reported status \'{}\', restarting stream ...'.format(status))
+                print('restarting stream ...'.format(status))
                 self.s.restart_stream()
                 self.is_restarted = True
         else:

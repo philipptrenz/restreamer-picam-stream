@@ -56,4 +56,5 @@ this scheme:
 sudo service picam-stream start
 ``` 
 
-It will also automatically be started on boot.
+It will also automatically be started on boot. The logs can be found at
+`/var/log/picam-stream.log`.
