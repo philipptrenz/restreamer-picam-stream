@@ -82,9 +82,10 @@ class Streamer:
             self.restart_stream()
 
     def stop_stream(self):
-        print('forcing stream stop ...')
-        self.is_forced_stream_stop = True
-        os.killpg(os.getpgid(self.stream_pid), signal.SIGTERM)
+        if self.is_streaming:
+            print('stopping streamer ...')
+            self.is_forced_stream_stop = True
+            os.killpg(os.getpgid(self.stream_pid), signal.SIGTERM)
 
     def restart_stream(self):
 

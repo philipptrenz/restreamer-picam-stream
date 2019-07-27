@@ -50,14 +50,13 @@ class Main:
 
     def start(self):
         self.o.start()
+        self.s.start_stream()
 
-    def exit(self):
-        print('SIGTERM or SIGINT was signaled, exiting')
+    def exit(self, signum, frame):
+        print('SIGTERM was sent, exiting')
 
         self.s.stop_stream()
         self.o.stop()
-
-        exit(0)
 
 
 if __name__ == '__main__':

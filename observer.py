@@ -62,5 +62,6 @@ class Observer:
             self.thread.start()
 
     def stop(self):
-        self.is_stopped = True
+        print('stopping observer ...')
         self.thread.join()
+        self.is_stopped = True
