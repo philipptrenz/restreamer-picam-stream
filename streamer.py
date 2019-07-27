@@ -1,4 +1,6 @@
+import os
 import time
+import signal
 import threading
 import subprocess
 
@@ -48,7 +50,7 @@ class Streamer:
         self.on_stream_stop when the subprocess completes.
         """
         def run():
-            self.stream_thread_proc = subprocess.Popen(self.stream_command, shell=True)
+            self.stream_thread_proc = subprocess.Popen(self.stream_command, shell=True, preexec_fn=os.setsid)
             self.stream_pid = self.stream_thread_proc.pid
             self.on_stream_start()
 
@@ -82,7 +84,7 @@ class Streamer:
     def stop_stream(self):
         print('forcing stream stop ...')
         self.is_forced_stream_stop = True
-        self.stream_thread_proc.kill()
+        os.killpg(os.getpgid(self.stream_pid), signal.SIGTERM)
 
     def restart_stream(self):
 
