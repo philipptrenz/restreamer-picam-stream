@@ -98,14 +98,15 @@ class Streamer:
         logging.warning(out)
 
     def stop_stream(self):
+        self.is_forced_stream_stop = True
+
         if self.is_streaming:
             logging.debug('stopping streamer ...')
-            self.is_forced_stream_stop = True
             os.killpg(os.getpgid(self.stream_pid), signal.SIGTERM)
 
             while self.is_streaming:
                 time.sleep(0.5)
-            return
+        return
 
     def restart_stream(self):
 
