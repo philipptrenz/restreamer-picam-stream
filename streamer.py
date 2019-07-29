@@ -15,9 +15,9 @@ class Streamer:
         self.is_streaming = False
         self.stream_process = None
         self.stream_thread = None
-        self.is_forced_stream_stop = False
         self.stream_pid = -1
 
+        self.do_auto_restart = True
         self.stream_command = self.get_stream_command(host, stream_token, stream_config)
 
     def get_stream_command(self, host, stream_token, stream_config):
@@ -47,10 +47,13 @@ class Streamer:
         else:
             return host
 
-    def start_stream(self):
+    def restart_stream(self):
         if self.is_streaming:
-            logging.debug('is already streaming')
+            logging.warning('is already streaming!')
             return
+        else:
+            self.is_streaming = True
+
         """
         Runs subprocess.Popen, and then calls the function
         self.on_stream_stop when the subprocess completes.
@@ -75,48 +78,45 @@ class Streamer:
             self.on_stream_stop()
             return
 
-        if not self.is_streaming:
-            self.stream_thread = threading.Thread(target=run, name="streamerThread")
-            self.stream_thread.start()
-        else:
-            logging.debug('already streaming!')
+        self.stream_thread = threading.Thread(target=run, name="StreamerThread")
+        self.stream_thread.start()
 
     def on_stream_start(self):
         logging.info('stream started (PID: {})'.format(self.stream_pid))
 
     def on_stream_stop(self):
         logging.info('stream stopped (PID: {})'.format(self.stream_pid))
-        forced = self.is_forced_stream_stop
-
-        self.is_forced_stream_stop = False
         self.is_streaming = False
 
-        if not forced:
-            # auto restart stream if it was not forced to stop
+        if self.do_auto_restart:
             self.restart_stream()
 
-    def log_subprocess_output(self, out):
-        logging.warning(out)
+        # reset to auto restart
+        self.do_auto_restart = True
+
+    def start_stream(self):
+        self.restart_stream()
 
     def stop_stream(self):
-        self.is_forced_stream_stop = True
 
         if self.is_streaming:
             logging.debug('stopping streamer ...')
-            os.killpg(os.getpgid(self.stream_pid), signal.SIGTERM)
 
-            # wait until stream is not longer streaming
+            self.do_auto_restart = False
+
+            try:
+                if self.stream_pid != -1:
+                    os.killpg(os.getpgid(self.stream_pid), signal.SIGTERM)
+            except Exception as e:
+                logging.error(e)
+
+            # wait until not longer streaming
             while self.is_streaming:
                 time.sleep(0.5)
-        return
-
-    def restart_stream(self):
-
-        if self.is_streaming:
-            self.stop_stream()
-
-        if self.is_forced_stream_stop:
-            logging.debug('restart requested, but is_forced_stream_stop flag is set')
+            return
         else:
-            self.is_streaming = True
-            self.start_stream()
+            logging.warning('asked to stop, but not streaming')
+            return
+
+    def log_subprocess_output(self, out):
+        logging.warning(out)

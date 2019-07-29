@@ -64,7 +64,7 @@ class Observer:
         if not self.is_running:
             self.is_running = True
 
-            self.thread = threading.Thread(target=self.run, name="observerThread")
+            self.thread = threading.Thread(target=self.run, name="ObserverThread")
             self.thread.start()
         else:
             logging.debug('observer already running')
