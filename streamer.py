@@ -1,6 +1,7 @@
 import os
 import time
 import signal
+import logging
 import threading
 import subprocess
 
@@ -8,6 +9,8 @@ import subprocess
 class Streamer:
 
     def __init__(self, host, stream_token, stream_config=None):
+
+        logging.basicConfig(level=logging.INFO, format='%(relativeCreated)6d %(threadName)s %(message)s')
 
         self.is_streaming = False
         self.stream_process = None
@@ -50,8 +53,18 @@ class Streamer:
         self.on_stream_stop when the subprocess completes.
         """
         def run():
-            self.stream_thread_proc = subprocess.Popen(self.stream_command, shell=True, preexec_fn=os.setsid)
+            self.stream_thread_proc = subprocess.Popen(
+                self.stream_command,
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                preexec_fn=os.setsid
+            )
+
+            (out, _) = self.stream_thread_proc.communicate()
+            self.log_subprocess_output(out)
             self.stream_pid = self.stream_thread_proc.pid
+
             self.on_stream_start()
 
             self.stream_thread_proc.wait()
@@ -63,14 +76,14 @@ class Streamer:
             self.stream_thread = threading.Thread(target=run)
             self.stream_thread.start()
         else:
-            print('already streaming!')
+            logging.debug('already streaming!')
 
     def on_stream_start(self):
         self.is_streaming = True
-        print('stream started (PID: {})'.format(self.stream_pid))
+        logging.info('stream started (PID: {})'.format(self.stream_pid))
 
     def on_stream_stop(self):
-        print('stream stopped (PID: {})'.format(self.stream_pid))
+        logging.info('stream stopped (PID: {})'.format(self.stream_pid))
 
         self.is_streaming = False
 
@@ -81,9 +94,12 @@ class Streamer:
             # auto restart stream if it was not forced to stop
             self.restart_stream()
 
+    def log_subprocess_output(self, out):
+        logging.warning(out)
+
     def stop_stream(self):
         if self.is_streaming:
-            print('stopping streamer ...')
+            logging.debug('stopping streamer ...')
             self.is_forced_stream_stop = True
             os.killpg(os.getpgid(self.stream_pid), signal.SIGTERM)
 

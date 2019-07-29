@@ -1,5 +1,6 @@
 import time
 import json
+import logging
 import threading
 from urllib.request import urlopen
 from urllib.error import HTTPError, URLError
@@ -8,6 +9,9 @@ from urllib.error import HTTPError, URLError
 class Observer:
 
     def __init__(self, host, event_callback):
+
+        logging.basicConfig(level=logging.INFO, format='%(relativeCreated)6d %(threadName)s %(message)s')
+
         self.host = host.replace('rtmp://', '').replace('http://', '').replace('https://', '')
         if self.host and self.host[-1] == '/':  # remove if string ends with dash
             self.host = self.host[:-1]
@@ -19,7 +23,7 @@ class Observer:
         self.polling_interval = 5  # seconds
 
     def run(self):
-        print('observer started')
+        logging.info('observer started')
         while True:
             try:
                 with urlopen('http://' + self.host + '/v1/states') as res:
@@ -29,13 +33,13 @@ class Observer:
                     self.handle_status(status)
             except HTTPError as e:
                 self.handle_status('http_error')
-                print(e)
+                logging.error(e)
             except URLError as e:
                 if 'Connection refused' in str(e.reason):
                     self.handle_status('server_not_reachable')
                 else:
                     self.handle_status('url_error')
-                    print('URLError:', e)
+                    logging.error(e)
 
             # check if loop should be exited
             start_time = time.time()
@@ -54,7 +58,7 @@ class Observer:
         if self.is_running:
             self.event_callback(status)
         else:
-            print('Not sending \'{}\' event, as observer is stopping'.format(status))
+            logging.debug('Not sending \'{}\' event, as observer is stopping'.format(status))
 
     def start(self):
         if not self.is_running:
@@ -63,9 +67,9 @@ class Observer:
             self.thread = threading.Thread(target=self.run)
             self.thread.start()
         else:
-            print('observer already running')
+            logging.debug('observer already running')
 
     def stop(self):
-        print('stopping observer ...')
+        logging.info('stopping observer ...')
         self.is_running = False
         self.thread.join()

@@ -2,6 +2,7 @@
 
 import json
 import signal
+import logging
 
 from observer import Observer
 from streamer import Streamer
@@ -10,6 +11,8 @@ from streamer import Streamer
 class Main:
 
     def __init__(self):
+
+        logging.basicConfig(level=logging.INFO, format='%(relativeCreated)6d %(threadName)s %(message)s')
 
         signal.signal(signal.SIGINT, self.exit)
         signal.signal(signal.SIGTERM, self.exit)
@@ -23,8 +26,8 @@ class Main:
 
         self.previous_status = ""
 
-        print('### PICAM-STREAM ###')
-        print('streaming to \'{}\''.format(host))
+        logging.info('### PICAM-STREAM ###')
+        logging.info('streaming to \'{}\''.format(host))
 
         self.s = Streamer(host, stream_token, stream_config)
         self.o = Observer(host, self.observer_event_handler)
@@ -37,12 +40,12 @@ class Main:
     def observer_event_handler(self, status):
 
         if self.previous_status != status: # status has changed
-            print('observer reported status \'{}\''.format(status))
+            logging.debug('observer reported status \'{}\''.format(status))
             self.previous_status = status
 
         if status in ['disconnected', 'stopped', 'error']:
             if not self.is_restarted:
-                print('(re)starting stream ...'.format(status))
+                logging.warning('(re)starting stream ...'.format(status))
                 self.s.restart_stream()
                 self.is_restarted = True
         else:
@@ -52,12 +55,12 @@ class Main:
         self.o.start()
 
     def exit(self, signum, frame):
-        print('SIGTERM was sent, exiting')
+        logging.debug('SIGTERM was sent, exiting')
 
         self.o.stop()
         self.s.stop_stream()
 
-        print('bye!')
+        logging.info('bye!')
 
 if __name__ == '__main__':
     Main().start()
