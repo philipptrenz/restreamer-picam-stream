@@ -73,7 +73,7 @@ class Streamer:
             return
 
         if not self.is_streaming:
-            self.stream_thread = threading.Thread(target=run, name="streamer-thread")
+            self.stream_thread = threading.Thread(target=run, name="streamerThread")
             self.stream_thread.start()
         else:
             logging.debug('already streaming!')
