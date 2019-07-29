@@ -107,13 +107,15 @@ class Streamer:
 
     def stop_stream(self):
         if self.is_streaming:
-            logging.debug('stopping streamer ...')
+            logging.info('stopping streamer ...')
 
             self.do_auto_restart = False
 
+            if self.stream_pid == -1:
+                logging.error('stream PID is not yet set, cannot kill')
+
             try:
-                if self.stream_pid != -1:
-                    os.killpg(os.getpgid(self.stream_pid), signal.SIGTERM)
+                os.killpg(os.getpgid(self.stream_pid), signal.SIGTERM)
             except Exception as e:
                 logging.error(e)
 
