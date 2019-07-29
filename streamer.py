@@ -116,6 +116,7 @@ class Streamer:
                 logging.error('stream PID is not yet set, cannot kill')
 
             try:
+                logging.debug('about to kill stream with PID {}'.format(self.stream_pid))
                 os.killpg(os.getpgid(self.stream_pid), signal.SIGTERM)
             except Exception as e:
                 logging.error(e)
