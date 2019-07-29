@@ -69,7 +69,7 @@ class Streamer:
             self.stream_pid = self.stream_thread_proc.pid
             self.on_stream_start()
 
-            threading.Thread(target=log_subprocess_output, name="StreamerLogThread").start()
+            threading.Thread(target=self.log_subprocess_output, name="StreamerLogThread").start()
             #self.log_subprocess_output()
 
             logging.debug('test1')
