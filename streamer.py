@@ -117,4 +117,8 @@ class Streamer:
         while self.is_streaming:
             time.sleep(0.5)
 
-        self.start_stream()
+        if self.is_forced_stream_stop:
+            logging.debug('restart requested, but is_forced_stream_stop flag is set')
+            return
+        else:
+            self.start_stream()
