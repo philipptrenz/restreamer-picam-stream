@@ -59,11 +59,11 @@ class Streamer:
         self.on_stream_stop when the subprocess completes.
         """
         def run():
-            logging.debug('test0')
-
             self.stream_thread_proc = subprocess.Popen(
                 self.stream_command,
                 shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
                 preexec_fn=os.setsid
             )
             self.stream_pid = self.stream_thread_proc.pid
@@ -72,18 +72,10 @@ class Streamer:
             threading.Thread(target=self.log_subprocess_output, name="StreamerLogThread").start()
             #self.log_subprocess_output()
 
-            logging.debug('test1')
-
-
             return_code = self.stream_thread_proc.wait()
-
-            logging.debug('test2')
-
             logging.info('stream process terminated with return code {}'.format(return_code))
 
             self.on_stream_stop()
-
-            logging.debug('test3')
 
             return
 
