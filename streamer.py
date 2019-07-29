@@ -85,12 +85,11 @@ class Streamer:
     def on_stream_stop(self):
         logging.info('stream stopped (PID: {})'.format(self.stream_pid))
 
-        self.is_streaming = False
-
         if self.is_forced_stream_stop:
             self.is_forced_stream_stop = False
-            pass
+            self.is_streaming = False
         else:
+            self.is_streaming = False
             # auto restart stream if it was not forced to stop
             self.restart_stream()
 
