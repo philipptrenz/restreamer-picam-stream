@@ -67,25 +67,23 @@ class Streamer:
                 preexec_fn=os.setsid
             )
             self.stream_pid = self.stream_thread_proc.pid
+            self.on_stream_start()
 
-
-            self.log_subprocess_output()
-
+            threading.Thread(target=log_subprocess_output, name="StreamerLogThread").start()
+            #self.log_subprocess_output()
 
             logging.debug('test1')
 
-            self.on_stream_start()
-            logging.debug('test2')
 
             return_code = self.stream_thread_proc.wait()
 
-            logging.debug('test3')
+            logging.debug('test2')
 
             logging.info('stream process terminated with return code {}'.format(return_code))
 
             self.on_stream_stop()
 
-            logging.debug('test4')
+            logging.debug('test3')
 
             return
 
@@ -124,12 +122,13 @@ class Streamer:
 
             # wait until not longer streaming
             while self.is_streaming:
+                logging.debug('waiting for streaming finished')
                 time.sleep(0.5)
             return
         else:
             logging.warning('asked to stop, but not streaming')
             return
 
-    def log_subprocess_output(self, out):
+    def log_subprocess_output(self):
         (out, _) = self.stream_thread_proc.communicate()
         logging.warning(out)
