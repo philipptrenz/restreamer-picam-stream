@@ -79,3 +79,5 @@ data/
 
 config.txt
 config.json
+
+*.pyc
