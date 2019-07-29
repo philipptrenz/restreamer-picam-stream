@@ -66,23 +66,26 @@ class Streamer:
                 shell=True,
                 preexec_fn=os.setsid
             )
-
-            (out, _) = self.stream_thread_proc.communicate()
-            logging.debug('test1')
-            self.log_subprocess_output(out)
-            logging.deub('test2')
             self.stream_pid = self.stream_thread_proc.pid
-            logging.debug('test3')
+
+
+            self.log_subprocess_output()
+
+
+            logging.debug('test1')
 
             self.on_stream_start()
-            logging.debug('test4')
+            logging.debug('test2')
 
             return_code = self.stream_thread_proc.wait()
-            logging.debug('test5')
+
+            logging.debug('test3')
+
             logging.info('stream process terminated with return code {}'.format(return_code))
 
             self.on_stream_stop()
-            logging.debug('test6')
+
+            logging.debug('test4')
 
             return
 
@@ -128,4 +131,5 @@ class Streamer:
             return
 
     def log_subprocess_output(self, out):
+        (out, _) = self.stream_thread_proc.communicate()
         logging.warning(out)
