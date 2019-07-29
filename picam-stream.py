@@ -12,7 +12,7 @@ class Main:
 
     def __init__(self):
 
-        logging.basicConfig(level=logging.INFO, format='%(relativeCreated)6d %(threadName)s %(message)s')
+        logging.basicConfig(level=logging.INFO, format='%(asctime)s %(threadName)s %(levelname)-8s %(message)s')
 
         signal.signal(signal.SIGINT, self.exit)
         signal.signal(signal.SIGTERM, self.exit)

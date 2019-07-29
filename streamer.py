@@ -10,7 +10,7 @@ class Streamer:
 
     def __init__(self, host, stream_token, stream_config=None):
 
-        logging.basicConfig(level=logging.INFO, format='%(relativeCreated)6d %(threadName)s %(message)s')
+        logging.basicConfig(level=logging.INFO, format='%(asctime)s %(threadName)s %(levelname)-8s %(message)s')
 
         self.is_streaming = False
         self.stream_process = None
