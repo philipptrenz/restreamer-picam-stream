@@ -68,14 +68,22 @@ class Streamer:
             )
 
             (out, _) = self.stream_thread_proc.communicate()
+            logging.info('test1')
             self.log_subprocess_output(out)
+            logging.info('test2')
             self.stream_pid = self.stream_thread_proc.pid
+            logging.info('test3')
 
             self.on_stream_start()
+            logging.info('test4')
 
-            self.stream_thread_proc.wait()
+            return_code = self.stream_thread_proc.wait()
+            logging.info('test5')
+            logging.info('stream process terminated with return code {}'.format(return_code))
 
             self.on_stream_stop()
+            logging.info('test6')
+
             return
 
         self.stream_thread = threading.Thread(target=run, name="StreamerThread")
@@ -98,7 +106,6 @@ class Streamer:
         self.restart_stream()
 
     def stop_stream(self):
-
         if self.is_streaming:
             logging.debug('stopping streamer ...')
 
