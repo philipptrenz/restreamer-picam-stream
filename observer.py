@@ -10,7 +10,7 @@ class Observer:
 
     def __init__(self, host, event_callback):
 
-        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(threadName)s %(levelname)-8s %(message)s')
+        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(threadName)s\t%(levelname)-8s\t%(message)s')
 
         self.host = host.replace('rtmp://', '').replace('http://', '').replace('https://', '')
         if self.host and self.host[-1] == '/':  # remove if string ends with dash

@@ -10,7 +10,7 @@ class Streamer:
 
     def __init__(self, host, stream_token, stream_config=None):
 
-        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(threadName)s %(levelname)-8s %(message)s')
+        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(threadName)s\t%(levelname)-8s\t%(message)s')
 
         self.is_streaming = False
         self.stream_process = None
@@ -62,15 +62,10 @@ class Streamer:
             self.stream_thread_proc = subprocess.Popen(
                 self.stream_command,
                 shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
                 preexec_fn=os.setsid
             )
             self.stream_pid = self.stream_thread_proc.pid
             self.on_stream_start()
-
-            threading.Thread(target=self.log_subprocess_output, name="StreamerLogThread").start()
-            #self.log_subprocess_output()
 
             return_code = self.stream_thread_proc.wait()
             logging.info('stream process terminated with return code {}'.format(return_code))
@@ -121,7 +116,3 @@ class Streamer:
         else:
             logging.warning('asked to stop, but not streaming')
             return
-
-    def log_subprocess_output(self):
-        (out, _) = self.stream_thread_proc.communicate()
-        logging.warning(out)
